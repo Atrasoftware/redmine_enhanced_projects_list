@@ -16,7 +16,7 @@
   <tbody>
   <% project_tree(@projects) do |project, level| %>
       <tr class="<%= cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
-        <td class="name"><span><%= link_to_project_settings(project, {}, :title => project.identifier) %></span></td>
+        <td class="name"><span><%= link_to project.identifier, project_path(project) %></span></td>
         <% if @settings.present? %>
         <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
             <td> <%= project[column.to_sym]%></td>
