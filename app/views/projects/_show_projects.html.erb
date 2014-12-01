@@ -1,5 +1,5 @@
 <div class="autoscroll">
-<table class="list">
+  <table id="myTable" class="tablesorter list">
   <thead>
     <tr>
       <th> <%= l("field_identifier".to_sym) %></th>
@@ -16,7 +16,7 @@
   <tbody>
   <% project_tree(@projects) do |project, level| %>
       <tr class="<%= cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
-        <td class="name"><span><%= link_to_project_settings(project, {}, :title => project.short_description) %></span></td>
+        <td class="name"><span><%= link_to_project_settings(project, {}, :title => project.identifier) %></span></td>
         <% if @settings.present? %>
         <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
             <td> <%= project[column.to_sym]%></td>
@@ -35,3 +35,12 @@
   </tbody>
 </table>
 </div>
+
+<%= javascript_include_tag 'jquery.tablesorter.min.js', :plugin=>"redmine_enhanced_projects_list" %>
+<script>
+    $(document).ready(function()
+            {
+                $("#myTable").tablesorter();
+            }
+    );
+</script>

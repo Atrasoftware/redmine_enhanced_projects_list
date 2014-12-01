@@ -1,3 +1,4 @@
+
 <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom, {:action => 'index', :format => 'atom', :key => User.current.rss_key}) %>
 <% end %>
@@ -6,8 +7,8 @@
   <%= render_project_action_links %>
 </div>
 
-<div id="projects-filter" style=" margin: 30px;">
-  <%= render :partial=> 'filter_projects' %>
+<div id="projects-filter" >
+  Search: <%= render :partial=> 'filter_projects' %>
 </div>
 
 <h2><%= l(:label_project_plural) %></h2>
