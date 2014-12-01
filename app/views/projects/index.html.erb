@@ -38,12 +38,7 @@
         <label for="closed"><%= check_box_tag 'closed', 1, params[:closed] %> <%= l(:label_show_closed_projects) %></label>
         <p><%= submit_tag l(:button_apply), :class => 'button-small', :name => nil %></p>
     <% end %>
-<% if User.current.admin? %>
-        <%= form_tag({}, :remote=> true, :method => :get) do %>
-          <%= render :partial=> 'settings/setting'%>
-        <p><%= submit_tag l(:button_apply), :class => 'button-small', :name => nil %></p>
-        <% end %>
-        <% end %>
+
 <% end %>
 
 <% html_title(l(:label_project_plural)) -%>
