@@ -2,20 +2,23 @@
 <table class="list">
   <thead>
     <tr>
-      <th>identifier</th>
-      <% Project.column_names.select{|col| @settings[col.to_sym] }.each do |column| %>
-              <th> <%= l("field_#{column}".to_sym) %></th>
-      <% end %>
-      <% CustomField.where(type: "ProjectCustomField").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
-          <th>  <%= cf.name %> </th>
-      <% end  %>
+      <th> <%= l("field_identifier".to_sym) %></th>
+      <% if @settings.present? %>
+          <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
+                  <th> <%= l("field_#{column}".to_sym) %></th>
+          <% end %>
+          <% CustomField.where(type: "ProjectCustomField").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
+              <th>  <%= cf.name %> </th>
+          <% end  %>
+       <% end %>
     </tr>
   </thead>
   <tbody>
   <% project_tree(@projects) do |project, level| %>
       <tr class="<%= cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
         <td class="name"><span><%= link_to_project_settings(project, {}, :title => project.short_description) %></span></td>
-        <% Project.column_names.select{|col| @settings[col.to_sym] }.each do |column| %>
+        <% if @settings.present? %>
+        <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
             <td> <%= project[column.to_sym]%></td>
         <% end %>
 
@@ -26,6 +29,7 @@
               <% end %>
             </td>
         <% end %>
+       <% end %>
       </tr>
   <% end %>
   </tbody>

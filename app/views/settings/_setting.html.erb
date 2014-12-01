@@ -1,6 +1,9 @@
 
 <div class="">
-  <% Project.column_names.reject{|col| ['id', 'lft', 'rgt','parent_id'].include? col}.each do |column| %>
+  <p style="display: none;">
+    <%= check_box_tag("settings[identifier]", true, true) %>
+  </p>
+  <% Project.column_names.reject{|col| ['id', 'lft', 'rgt','parent_id','identifier'].include? col}.each do |column| %>
       <p>
         <%= l("field_#{column}".to_sym) %>
         <%= check_box_tag("settings[#{column}]", true, @settings["#{column}".to_sym]) %>
