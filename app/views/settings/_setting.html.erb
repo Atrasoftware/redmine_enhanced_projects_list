@@ -1,0 +1,16 @@
+
+<div class="">
+  <% Project.column_names.reject{|col| ['id', 'lft', 'rgt','parent_id'].include? col}.each do |column| %>
+      <p>
+        <%= l("field_#{column}".to_sym) %>
+        <%= check_box_tag("settings[#{column}]", true, @settings["#{column}".to_sym]) %>
+      </p>
+  <% end %>
+  <% CustomField.where(type: "ProjectCustomField").each do |cf| %>
+      <p>
+        <%= cf.name %>
+        <%= check_box_tag("settings[#{cf.name}]", true, @settings[cf.name.to_sym]) %>
+      </p>
+  <% end  %>
+
+</div>

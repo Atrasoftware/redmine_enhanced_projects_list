@@ -1,0 +1,33 @@
+<div class="autoscroll">
+<table class="list">
+  <thead>
+    <tr>
+      <th>identifier</th>
+      <% Project.column_names.select{|col| @settings[col.to_sym] }.each do |column| %>
+              <th> <%= l("field_#{column}".to_sym) %></th>
+      <% end %>
+      <% CustomField.where(type: "ProjectCustomField").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
+          <th>  <%= cf.name %> </th>
+      <% end  %>
+    </tr>
+  </thead>
+  <tbody>
+  <% project_tree(@projects) do |project, level| %>
+      <tr class="<%= cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
+        <td class="name"><span><%= link_to_project_settings(project, {}, :title => project.short_description) %></span></td>
+        <% Project.column_names.select{|col| @settings[col.to_sym] }.each do |column| %>
+            <td> <%= project[column.to_sym]%></td>
+        <% end %>
+
+        <% project.visible_custom_field_values.select{|coll| @settings[coll.custom_field.name.to_sym] }.each do |custom_value| %>
+            <td>
+              <% unless custom_value.value.blank? %>
+                  <%= h  format_object(custom_value) %>
+              <% end %>
+            </td>
+        <% end %>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>
