@@ -7,10 +7,11 @@
           <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
                   <th> <%= l("field_#{column}".to_sym) %></th>
           <% end %>
-          <% CustomField.where(type: "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
+          <% CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
               <th>  <%= cf.name %> </th>
           <% end  %>
        <% end %>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -21,7 +22,7 @@
         <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
             <td> <%= project[column.to_sym]%></td>
         <% end %>
-            <% CustomField.where(type: "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
+            <% CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
                 <% project.visible_custom_field_values.select{|coll| coll.custom_field.name == cf.name }.each do |custom_value| %>
                     <td>
                       <% unless custom_value.value.blank? %>
@@ -31,6 +32,11 @@
                 <% end %>
                 <% end %>
        <% end %>
+        <td>
+          <% if User.current.member_of?(project)%>
+             <span class="my-project"></span>
+          <% end %>
+        </td>
       </tr>
   <% end %>
   </tbody>

@@ -40,7 +40,7 @@
     <% end %>
 <% if User.current.admin? %>
         <%= form_tag({}, :remote=> true, :method => :get) do %>
-          <%= render partial: 'settings/setting'%>
+          <%= render :partial=> 'settings/setting'%>
         <p><%= submit_tag l(:button_apply), :class => 'button-small', :name => nil %></p>
         <% end %>
         <% end %>
