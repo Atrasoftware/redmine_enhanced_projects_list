@@ -61,8 +61,15 @@ module  Patches
             scope = scope.visible.order('lft').all
           end
           @projects = scope
-
-        send_data(ProjectsHelper.to_pdf(@projects,@settings,'FR'), :type => 'application/pdf', :filename => 'projects.pdf')
+          settings= Array.new
+          settings << l("field_identifier".to_sym)
+          Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column|
+            settings<< l("field_#{column}".to_sym)
+          end
+          CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf|
+            settings<< cf.name
+          end
+        send_data(ProjectsHelper.to_pdf(@projects,@settings,settings,'FR'), :type => 'application/pdf', :filename => 'projects.pdf')
         }
         format.js{
           scope = Project

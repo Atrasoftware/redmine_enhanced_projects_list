@@ -7,7 +7,7 @@ module  Patches
 
       base.send(:include, InstanceMethods)
       base.class_eval do
-
+        include Redmine::I18n
         def self.fetch_row_project_values(project, cols, level)
           cols.collect do |column,val|
             s = if CustomField.where(:type=>"ProjectCustomField").where(:name=>column).present?
@@ -133,8 +133,8 @@ module  Patches
           col_width
         end
 
-        def self.render_table_project_header(pdf, hash, col_width, row_height, table_width)
-          cols = hash.map{|k,v| k}
+        def self.render_table_project_header(pdf, cols, col_width, row_height, table_width)
+         # cols = hash.map{|k,v| k}
 
           # headers
           pdf.SetFontStyle('B',8)
@@ -160,15 +160,17 @@ module  Patches
           return heights.max
         end
 
-        def self.to_pdf(projects,settings,current_language)
+
+
+        def self.to_pdf(projects,settings,columns,current_language)
 
           pdf = ::Redmine::Export::PDF::ITCPDF.new(current_language)
-          pdf.SetTitle("PROJECT INDEX")
+
           pdf.alias_nb_pages
           pdf.AddPage("L")
 
           pdf.SetX(15)
-          pdf.RDMCell(100, 20,"PROJECT INDEX")
+          
           pdf.Ln
          # pdf.SetFontStyle('B', 9)
 
@@ -201,7 +203,7 @@ module  Patches
           pdf.RDMCell(190,10, "Projects")
           pdf.ln
 
-          render_table_project_header(pdf, settings, col_width, row_height, table_width)
+          render_table_project_header(pdf, columns, col_width, row_height, table_width)
           # use full width if the description is displayed
 
           Project.project_tree(projects) do |project, level|
@@ -219,10 +221,18 @@ module  Patches
                        end
                   end
                end
-            cc = project_cells.collect{|c| "#{c}"}
+            cc = project_cells.collect{|value|
+              if value.is_a?(Date)
+                format_date(value)
+              elsif value.is_a?(Time)
+                format_time(value)
+              else
+                "#{value}"
+              end
+            }
             max_height = get_projects_to_pdf_write_cells(pdf,cc , col_width)
 
-            project_cells.each_with_index do |column, i|
+            cc.each_with_index do |column, i|
               pdf.RDMMultiCell(col_width[i], max_height, "#{column}", 1, '', 1, 0)
             end
 
@@ -237,7 +247,7 @@ module  Patches
             space_left = page_height - base_y - bottom_margin
             if max_height > space_left
               pdf.add_page("L")
-              render_table_project_header(pdf, settings, col_width, row_height, table_width)
+              render_table_project_header(pdf, columns, col_width, row_height, table_width)
               base_y = pdf.get_y
             end
             pdf.set_x(10)
