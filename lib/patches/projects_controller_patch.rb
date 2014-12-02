@@ -43,21 +43,21 @@ module  Patches
           projects = Project.visible.order('created_on DESC').limit(Setting.feeds_limit.to_i).all
           render_feed(projects, :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
         }
+
         format.js{
           scope = Project
           unless params[:closed]
             scope = scope.active
           end
-
-          if params[:project_search]
-            @projects = scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%").order('lft')
-          else
-            if User.current.admin?
-              Setting.send "plugin_redmine_enhanced_projects_list=", params[:settings]
-            end
-            @projects = scope.visible.order('lft').all
-          end
           @settings = Setting.send "plugin_redmine_enhanced_projects_list"
+          if params[:project_search]
+            scope= scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%")
+            val = CustomValue.where(:customized_type=> 'Project').where("value like ?", "%#{params[:project_search]}%" )
+            val.each do |pr|
+              scope<< pr.customized unless scope.map(&:identifier).include? pr.customized.identifier
+            end
+          end
+          @projects = scope
         }
       end
     end

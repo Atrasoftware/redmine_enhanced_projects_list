@@ -8,7 +8,7 @@
 </div>
 
 <div id="projects-filter" class="hide-when-print" >
-  Search: <%= render :partial=> 'filter_projects' %>
+  <%= l(:description_filter) %>: <%= render :partial=> 'filter_projects' %>
 </div>
 
 <h2><%= l(:label_project_plural) %></h2>
@@ -30,6 +30,7 @@
 
 <% other_formats_links do |f| %>
     <%= f.link_to 'Atom', :url => {:key => User.current.rss_key} %>
+   
 <% end %>
 
 <% content_for :sidebar do %>
