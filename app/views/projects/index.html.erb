@@ -27,12 +27,12 @@
       <span class="my-project"><%= l(:label_my_projects) %></span>
     </p>
 <% end %>
-
+<span id="pdf_generate">
 <% other_formats_links do |f| %>
     <%= f.link_to 'Atom', :url => {:key => User.current.rss_key} %>
-    <%= f.link_to 'PDF', :url => params %>
+   <%= f.link_to 'PDF', :url => params %>
 <% end %>
-
+</span>
 <% content_for :sidebar do %>
     <%= form_tag({}, :method => :get) do %>
         <h3><%= l(:label_project_plural) %></h3>
