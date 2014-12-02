@@ -12,6 +12,7 @@
           <% end  %>
        <% end %>
       <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
@@ -35,6 +36,11 @@
         <td>
           <% if User.current.member_of?(project)%>
              <span class="my-project"></span>
+          <% end %>
+        </td>
+        <td>
+          <% if (User.current.member_of?(project) and User.current.allowed_to?({:controller => :projects, :action => :copy}, project, :global => false)) or User.current.admin? %>
+                  <%= link_to(l(:button_copy), { :controller => 'projects', :action => 'copy', :id => project }, :class => 'icon icon-copy') %>
           <% end %>
         </td>
       </tr>

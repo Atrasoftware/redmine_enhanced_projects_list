@@ -7,8 +7,9 @@ module  Patches
 
       base.send(:include, InstanceMethods)
       base.class_eval do
-
+        before_filter :require_admin, :only => [ :archive, :unarchive, :destroy ]
         alias_method_chain  :index, :filter_project
+        before_filter :copy_authorize, :only=>[:copy]
       end
     end
   end
@@ -47,16 +48,25 @@ module  Patches
           unless params[:closed]
             scope = scope.active
           end
-          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
+
           if params[:project_search]
-            scope= scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%")
-            val = CustomValue.where(:customized_type=> 'Project').where("value like ?", "%#{params[:project_search]}%" )
-            val.each do |pr|
-              scope<< pr.customized unless scope.map(&:identifier).include? pr.customized.identifier
+            @projects = scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%").order('lft')
+          else
+            if User.current.admin?
+              Setting.send "plugin_redmine_enhanced_projects_list=", params[:settings]
             end
+            @projects = scope.visible.order('lft').all
           end
-          @projects = scope
+          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
         }
+      end
+    end
+
+    private
+    def copy_authorize
+      project = Project.find(params[:id])
+      unless User.current.member_of?(project) and User.current.allowed_to?({:controller => :projects, :action => :copy}, project, :global => false)
+          require_admin
       end
     end
   end
