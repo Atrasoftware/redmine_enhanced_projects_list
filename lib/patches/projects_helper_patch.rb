@@ -167,13 +167,15 @@ module  Patches
           pdf = ::Redmine::Export::PDF::ITCPDF.new(current_language)
 
           pdf.alias_nb_pages
+          disclosure_note = "The contents of this document are confidential and of solely property of Atra S.r.l. / www.atra.it © "
+          pdf.footer_date = "#{disclosure_note}  #{format_time(DateTime.now)}"
           pdf.AddPage("L")
 
           pdf.SetX(15)
 
           pdf.Ln
          # pdf.SetFontStyle('B', 9)
-        
+
 
          # Landscape A4 = 210 x 297 mm
           page_height   = pdf.get_page_height # 210
