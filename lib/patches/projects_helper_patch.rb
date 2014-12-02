@@ -135,7 +135,7 @@ module  Patches
 
         def self.render_table_project_header(pdf, hash, col_width, row_height, table_width)
           cols = hash.map{|k,v| k}
-          puts "=========123=========#{cols}================================"
+
           # headers
           pdf.SetFontStyle('B',8)
           pdf.set_fill_color(230, 230, 230)
