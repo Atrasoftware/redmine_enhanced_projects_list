@@ -206,7 +206,7 @@ module  Patches
 
           Project.project_tree(projects) do |project, level|
             project_cells= Array.new
-            project_cells<< project.identifier
+            project_cells<< "#{'    '*level}#{project.identifier}"
                if settings.present?
                    Project.column_names.select{|col| settings[col.to_sym] and col!= "identifier" }.each do |column|
                      project_cells<< project[column.to_sym]
@@ -221,7 +221,6 @@ module  Patches
                end
             cc = project_cells.collect{|c| "#{c}"}
             max_height = get_projects_to_pdf_write_cells(pdf,cc , col_width)
-           # col_values = fetch_row_project_values(project, settings, level)
 
             project_cells.each_with_index do |column, i|
               pdf.RDMMultiCell(col_width[i], max_height, "#{column}", 1, '', 1, 0)
