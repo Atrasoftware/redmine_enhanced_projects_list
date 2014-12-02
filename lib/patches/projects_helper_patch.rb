@@ -170,13 +170,12 @@ module  Patches
           pdf.AddPage("L")
 
           pdf.SetX(15)
-          
+
           pdf.Ln
          # pdf.SetFontStyle('B', 9)
+        
 
-
-
-          # Landscape A4 = 210 x 297 mm
+         # Landscape A4 = 210 x 297 mm
           page_height   = pdf.get_page_height # 210
           page_width    = pdf.get_page_width  # 297
           left_margin   = pdf.get_original_margins['left'] # 10
@@ -215,7 +214,9 @@ module  Patches
                     end
                   CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| settings[col.name.to_sym] }.each do |cf|
                       project.visible_custom_field_values.select{|coll| coll.custom_field.name == cf.name }.each do |custom_value|
-                          unless custom_value.value.blank?
+                          if custom_value.value.blank?
+                            project_cells<< ""
+                          else
                             project_cells<<   custom_value.value
                            end
                        end
