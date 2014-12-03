@@ -60,8 +60,11 @@
 <%= javascript_include_tag 'jquery.tablesorter.min.js', :plugin=>"redmine_enhanced_projects_list" %>
 <script>
     $(document).ready(function()
-            {
-                $("#myTable").tablesorter();
-            }
+    {
+        $("#myTable").tablesorter();
+        $.fn.reverse = [].reverse;
+        $("#myTable > tbody > tr").reverse().appendTo("#myTable > tbody");
+
+    }
     );
 </script>
