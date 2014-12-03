@@ -16,4 +16,11 @@
       </p>
   <% end  %>
 
+  <p>
+    ===========================
+  </p>
+  <p>
+    Sort projects:
+    <%= select_tag("settings[sorting_projects_order]", options_for_select([['ASC',false],['DESC',true]], @settings[:sorting_projects_order] )) %>
+  </p>
 </div>

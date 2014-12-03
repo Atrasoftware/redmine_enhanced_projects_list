@@ -56,15 +56,16 @@
   </tbody>
 </table>
 </div>
-
+<%= @settings[:sorting_projects_order] %>
 <%= javascript_include_tag 'jquery.tablesorter.min.js', :plugin=>"redmine_enhanced_projects_list" %>
 <script>
     $(document).ready(function()
     {
         $("#myTable").tablesorter();
-        $.fn.reverse = [].reverse;
-        $("#myTable > tbody > tr").reverse().appendTo("#myTable > tbody");
-
+        <% if @settings[:sorting_projects_order] == 'true' %>
+            $.fn.reverse = [].reverse;
+            $("#myTable > tbody > tr").reverse().appendTo("#myTable > tbody");
+        <% end %>
     }
     );
 </script>

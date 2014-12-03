@@ -10,7 +10,8 @@ Redmine::Plugin.register :redmine_enhanced_projects_list do
       'name'  => true,
       'description'     => true,
       'created_on'         => true,
-      'update_on' => true
+      'update_on' => true,
+      'sorting_projects_order'=> false
   }, :partial => 'settings/setting'
 end
 Rails.application.config.to_prepare do

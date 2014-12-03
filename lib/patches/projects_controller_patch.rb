@@ -69,7 +69,12 @@ module  Patches
           CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf|
             settings<< cf.name
           end
-        send_data(ProjectsHelper.to_pdf(@projects,@settings,settings,'FR'), :type => 'application/pdf', :filename => 'projects.pdf')
+          order_desc = false
+          if @settings[:sorting_projects_order] == 'true'
+            order_desc = true
+          end
+          @settings= @settings.except(:sorting_projects_order)
+        send_data(ProjectsHelper.to_pdf(@projects,@settings,settings,'FR',order_desc), :type => 'application/pdf', :filename => 'projects.pdf')
         }
         format.js{
           scope = Project

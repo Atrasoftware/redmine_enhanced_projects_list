@@ -162,7 +162,7 @@ module  Patches
 
 
 
-        def self.to_pdf(projects,settings,columns,current_language)
+        def self.to_pdf(projects,settings,columns,current_language, order_desc= false)
 
           pdf = ::Redmine::Export::PDF::ITCPDF.new(current_language)
 
@@ -206,7 +206,7 @@ module  Patches
 
           render_table_project_header(pdf, columns, col_width, row_height, table_width)
           # use full width if the description is displayed
-
+tab =[]
           Project.project_tree(projects) do |project, level|
             project_cells= Array.new
             project_cells<< "#{'    '*level}#{project.identifier}"
@@ -233,8 +233,15 @@ module  Patches
                 "#{value}"
               end
             }
-            max_height = get_projects_to_pdf_write_cells(pdf,cc , col_width)
 
+
+             tab<< cc
+          end
+          if order_desc
+            tab.reverse!
+          end
+          tab.each do |cc|
+            max_height = get_projects_to_pdf_write_cells(pdf,cc , col_width)
             cc.each_with_index do |column, i|
               pdf.RDMMultiCell(col_width[i], max_height, "#{column}", 1, '', 1, 0)
             end
@@ -254,7 +261,7 @@ module  Patches
               base_y = pdf.get_y
             end
             pdf.set_x(10)
-            end
+          end
           pdf.Output
         end
 
