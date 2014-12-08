@@ -8,18 +8,18 @@ module  Patches
       base.send(:include, InstanceMethods)
       base.class_eval do
 
-        def self.project_tree_with_order(projects, settings)
+        def self.project_tree_with_order(projects, order_desc)
           ancestors = []
           p=[]
           scope = Project
-          if settings[:sorting_projects_order] == 'true'
+          if order_desc
             prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier).reverse
           else
             prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier)
           end
           prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier)
           puts "==============================================="
-          projects = sorting_projects(p,prs,scope,settings)
+          projects = sorting_projects(p,prs,scope,order_desc)
 
           projects.each do |project|
             while (ancestors.any? && !project.is_descendant_of?(ancestors.last))
@@ -29,16 +29,16 @@ module  Patches
             ancestors << project
           end
         end
-        def self.sorting_projects(p,projects,all_projects,settings)
+        def self.sorting_projects(p,projects,all_projects,order_desc)
           projects.each do |project|
             p<< project
-            if settings[:sorting_projects_order] == 'true'
+            if order_desc
             prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier).reverse
             else
               prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier)
               end
             if prs.present?
-              sorting_projects(p,prs,all_projects,settings)
+              sorting_projects(p,prs,all_projects,order_desc)
             end
           end
           p

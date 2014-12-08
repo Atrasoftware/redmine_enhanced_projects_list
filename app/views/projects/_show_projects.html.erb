@@ -16,7 +16,14 @@
     </tr>
   </thead>
   <tbody>
-  <% Project.project_tree_with_order(@projects,@settings) do |project, level| %>
+  <%
+     if @settings[:sorting_projects_order] == 'true'
+       order_desc = true
+       else
+         order_desc = false
+     end
+  %>
+  <% Project.project_tree_with_order(@projects,order_desc) do |project, level| %>
       <tr class="<%= cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
         <td class="name"><span><%= link_to project.identifier, project_path(project) %></span></td>
         <% if @settings.present? %>

@@ -207,7 +207,7 @@ module  Patches
           render_table_project_header(pdf, columns, col_width, row_height, table_width)
           # use full width if the description is displayed
 tab =[]
-          Project.project_tree(projects) do |project, level|
+          Project.project_tree_with_order(projects,order_desc) do |project, level|
             project_cells= Array.new
             project_cells<< "#{'    '*level}#{project.identifier}"
                if settings.present?
@@ -237,9 +237,7 @@ tab =[]
 
              tab<< cc
           end
-          if order_desc
-            tab.reverse!
-          end
+         
           tab.each do |cc|
             max_height = get_projects_to_pdf_write_cells(pdf,cc , col_width)
             cc.each_with_index do |column, i|
