@@ -69,10 +69,7 @@
     $(document).ready(function()
     {
         $("#myTable").tablesorter();
-        <% if @settings[:sorting_projects_order] == 'true' %>
-            $.fn.reverse = [].reverse;
-            $("#myTable > tbody > tr").reverse().appendTo("#myTable > tbody");
-        <% end %>
+
     }
     );
 </script>

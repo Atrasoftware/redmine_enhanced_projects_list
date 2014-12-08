@@ -237,7 +237,7 @@ tab =[]
 
              tab<< cc
           end
-         
+
           tab.each do |cc|
             max_height = get_projects_to_pdf_write_cells(pdf,cc , col_width)
             cc.each_with_index do |column, i|

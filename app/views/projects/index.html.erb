@@ -27,6 +27,9 @@
       <span class="my-project"><%= l(:label_my_projects) %></span>
     </p>
 <% end %>
+<div>
+  <%= will_paginate @projects %>
+</div>
 <span id="pdf_generate">
 <% other_formats_links do |f| %>
     <%= f.link_to 'Atom', :url => {:key => User.current.rss_key} %>

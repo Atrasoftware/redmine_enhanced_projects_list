@@ -7,6 +7,7 @@ module  Patches
 
       base.send(:include, InstanceMethods)
       base.class_eval do
+        require 'will_paginate'
         before_filter :require_admin, :only => [ :archive, :unarchive, :destroy ]
         alias_method_chain  :index, :filter_project
         before_filter :copy_authorize, :only=>[:copy]
@@ -19,6 +20,7 @@ module  Patches
   module InstanceMethods
 
     def index_with_filter_project
+
       @plugin = Redmine::Plugin.find("redmine_enhanced_projects_list")
       @partial = @plugin.settings[:partial]
       unless @plugin.configurable?
@@ -32,7 +34,7 @@ module  Patches
           unless params[:closed]
             scope = scope.active
           end
-          @projects = scope.visible.order('lft').all
+          @projects = scope.visible.order('lft').all.paginate(:page=>params[:page],:per_page=>5)
         }
         format.api  {
           @offset, @limit = api_offset_and_limit
