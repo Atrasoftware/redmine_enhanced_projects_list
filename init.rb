@@ -17,4 +17,5 @@ end
 Rails.application.config.to_prepare do
   ProjectsController.send(:include, Patches::ProjectsControllerPatch)
   ProjectsHelper.send(:include, Patches::ProjectsHelperPatch)
+  Project.send(:include, Patches::ProjectPatch)
 end
