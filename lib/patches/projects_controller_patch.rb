@@ -34,7 +34,11 @@ module  Patches
           unless params[:closed]
             scope = scope.active
           end
-          @projects = scope.visible.order('lft').all.paginate(:page=>params[:page],:per_page=>5)
+          order = 'identifier'
+          if @settings[:sorting_projects_order] == 'true'
+            order = 'identifier DESC'
+          end
+          @projects = scope.visible.order(order).all.paginate(:page=>params[:page],:per_page=>5)
         }
         format.api  {
           @offset, @limit = api_offset_and_limit
