@@ -1,4 +1,3 @@
-require 'will_paginate/array'
 Redmine::Plugin.register :redmine_enhanced_projects_list do
   name 'Redmine Enhanced Projects List plugin'
   author 'Bilel KEDIDI'

@@ -28,7 +28,8 @@
     </p>
 <% end %>
 <div>
-  <%= will_paginate @projects %>
+  <p class="pagination"><%= pagination_links_full @projects_pages, @projects_count %></p>
+
 </div>
 <span id="pdf_generate">
 <% other_formats_links do |f| %>

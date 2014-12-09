@@ -7,7 +7,7 @@ module  Patches
 
       base.send(:include, InstanceMethods)
       base.class_eval do
-        require 'will_paginate'
+
         before_filter :require_admin, :only => [ :archive, :unarchive, :destroy ]
         alias_method_chain  :index, :filter_project
         before_filter :copy_authorize, :only=>[:copy]
@@ -20,7 +20,6 @@ module  Patches
   module InstanceMethods
 
     def index_with_filter_project
-
       @plugin = Redmine::Plugin.find("redmine_enhanced_projects_list")
       @partial = @plugin.settings[:partial]
       unless @plugin.configurable?
@@ -38,7 +37,17 @@ module  Patches
           if @settings[:sorting_projects_order] == 'true'
             order = 'identifier DESC'
           end
-          @projects = scope.visible.order(order).all.paginate(:page=>params[:page],:per_page=>5)
+          #change the limit HERE
+          # PS: LIMIT are set for project root ( parent id = null)
+          @limit = 3
+          @projects = scope.visible.where("parent_id is null").all#.paginate(:page=>params[:page],:per_page=>2)
+          @projects_count = @projects.count
+          puts "======================================#{@projects.count}==============================================="
+          @projects_pages = Redmine::Pagination::Paginator.new @projects_count, @limit, params['page']
+          @offset ||=@projects_pages.offset
+
+          @projects =  scope.visible.where("parent_id is null").order(order).offset(@offset).limit(@limit)
+          puts "=================================#{@offset}=====#{@projects.count}==============================================="
         }
         format.api  {
           @offset, @limit = api_offset_and_limit
