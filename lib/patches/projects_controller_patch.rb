@@ -39,7 +39,7 @@ module  Patches
           end
           #change the limit HERE
           # PS: LIMIT are set for project root ( parent id = null)
-          @limit = 3
+          @limit  = per_page_option
           @projects_count  = scope.visible.where("parent_id is null").size
           @projects_pages = Redmine::Pagination::Paginator.new @projects_count, @limit, params['page']
           @offset ||=@projects_pages.offset
