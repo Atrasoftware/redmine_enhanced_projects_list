@@ -69,10 +69,18 @@ module  Patches
               scope<< pr.customized unless scope.map(&:identifier).include? pr.customized.identifier
             end
           else
-            scope = scope.visible.order('lft').all
+            order = 'identifier'
+            if @settings[:sorting_projects_order] == 'true'
+              order = 'identifier DESC'
+            end
+            @limit  = per_page_option
+            @projects_count  = scope.visible.where("parent_id is null").size
+            @projects_pages = Redmine::Pagination::Paginator.new @projects_count, @limit, params['page']
+            @offset ||=@projects_pages.offset
+            scope= scope.visible.where("parent_id is null").order(order).offset(@offset).limit(@limit)
           end
           @projects = scope
-          settings= Array.new
+              settings= Array.new
           settings << l("field_identifier".to_sym)
           Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column|
             settings<< l("field_#{column}".to_sym)
