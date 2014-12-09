@@ -17,7 +17,7 @@ module  Patches
           else
             prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier)
           end
-         
+
           projects = sorting_projects(p,prs,scope,order_desc)
 
           projects.each do |project|

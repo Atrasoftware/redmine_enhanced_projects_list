@@ -1,4 +1,9 @@
 <% other_formats_links do |f| %>
+
     <%= f.link_to 'Atom', :url => {:key => User.current.rss_key} %>
-    <%= f.link_to 'PDF', :url => params %>
+    <% if params['page'] %>
+        <%= link_to 'PDF', projects_path(params.merge(:format=>'pdf')) %>
+    <% else %>
+        <%= f.link_to 'PDF', :url => params %>
+    <% end %>
 <% end %>

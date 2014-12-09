@@ -32,10 +32,7 @@
 
 </div>
 <span id="pdf_generate">
-<% other_formats_links do |f| %>
-    <%= f.link_to 'Atom', :url => {:key => User.current.rss_key} %>
-   <%= f.link_to 'PDF', :url => params %>
-<% end %>
+<%= render partial: 'show_link_pdf' %>
 </span>
 <% content_for :sidebar do %>
     <%= form_tag({}, :method => :get) do %>

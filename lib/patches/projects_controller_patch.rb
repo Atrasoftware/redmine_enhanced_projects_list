@@ -56,7 +56,7 @@ module  Patches
         }
         format.pdf{
 
-          puts "=====--------------------#{params}--------==========-------------------"
+          puts "=123====--------------------#{params}--------==========-------------------"
           scope = Project
           unless params[:closed]
             scope = scope.active
