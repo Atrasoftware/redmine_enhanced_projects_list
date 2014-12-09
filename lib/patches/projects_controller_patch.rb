@@ -39,7 +39,7 @@ module  Patches
           end
           #change the limit HERE
           # PS: LIMIT are set for project root ( parent id = null)
-          @limit = 3
+          @limit = 20
           @projects = scope.visible.where("parent_id is null").all#.paginate(:page=>params[:page],:per_page=>2)
           @projects_count = @projects.count
           puts "======================================#{@projects.count}==============================================="
