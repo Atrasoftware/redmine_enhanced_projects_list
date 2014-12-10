@@ -30,7 +30,7 @@ module InstanceMethods
     end
     Project.project_tree_with_order(all_projects,order_desc) do |p, level|
       prefix = (level > 0 ? ('--' * level + ' ') : '')
-      values << ["#{prefix}#{p.identifier}", p.id.to_s]
+      values << ["#{prefix}[#{p.identifier}]#{p.name}", p.id.to_s]
     end
     @all_projects_values = values
   end
