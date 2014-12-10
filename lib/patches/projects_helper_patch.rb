@@ -233,8 +233,6 @@ tab =[]
                 "#{value}"
               end
             }
-
-
              tab<< cc
           end
 
@@ -252,11 +250,11 @@ tab =[]
             # make new page if it doesn't fit on the current one
             base_y     = pdf.get_y
             max_height = get_projects_to_pdf_write_cells(pdf, cc, col_width)
-            space_left = page_height - base_y - bottom_margin
+            space_left = page_height - base_y - 2*bottom_margin
             if max_height > space_left
               pdf.add_page("L")
+              pdf.ln
               render_table_project_header(pdf, columns, col_width, row_height, table_width)
-              base_y = pdf.get_y
             end
             pdf.set_x(10)
           end
