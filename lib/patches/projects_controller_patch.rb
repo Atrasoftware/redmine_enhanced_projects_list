@@ -50,7 +50,7 @@ module  Patches
         format.api  {
           @offset, @limit = api_offset_and_limit
           @project_count = Project.visible.count
-          @projects = Project.get_all_projects(Project.visible.order(order).offset(@offset).limit(@limit))
+          @projects = Project.get_all_projects(Project.visible,order == 'identifier DESC' )
         }
         format.atom {
           projects = Project.visible.order('created_on DESC').limit(Setting.feeds_limit.to_i).all
