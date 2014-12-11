@@ -10,16 +10,7 @@ module  Patches
 
         def self.project_tree_with_order(projects, order_desc)
           ancestors = []
-          p=[]
-          scope = Project
-          if order_desc
-            prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier).reverse
-          else
-            prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier)
-          end
-
-          projects = sorting_projects(p,prs,scope,order_desc)
-
+          projects = get_all_projects(projects,order_desc)
           projects.each do |project|
             while (ancestors.any? && !project.is_descendant_of?(ancestors.last))
               ancestors.pop
@@ -28,6 +19,18 @@ module  Patches
             ancestors << project
           end
         end
+
+        def self.get_all_projects(projects,order_desc=false)
+          p=[]
+          scope = Project
+          if order_desc
+            prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier).reverse
+          else
+            prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier)
+          end
+          sorting_projects(p,prs,scope,order_desc)
+        end
+
         def self.sorting_projects(p,projects,all_projects,order_desc)
           projects.each do |project|
             p<< project
