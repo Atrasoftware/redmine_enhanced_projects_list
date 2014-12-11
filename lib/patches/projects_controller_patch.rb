@@ -57,8 +57,6 @@ module  Patches
           render_feed(projects, :title => "#{Setting.app_title}: #{l(:label_project_latest)}")
         }
         format.pdf{
-
-          puts "=123====--------------------#{params}--------==========-------------------"
           scope = Project
           unless params[:closed]
             scope = scope.active
