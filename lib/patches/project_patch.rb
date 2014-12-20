@@ -8,7 +8,11 @@ module  Patches
       base.send(:include, InstanceMethods)
       base.class_eval do
 
-        def self.project_tree_with_order(projects, order_desc)
+        class<< self
+          alias_method_chain :project_tree, :new_order
+        end
+
+        def self.project_tree_with_order(projects, order_desc, &block)
           ancestors = []
           projects = get_all_projects(projects,order_desc)
           projects.each do |project|
@@ -51,6 +55,15 @@ module  Patches
 
       end
   module ClassMethods
+   def project_tree_with_new_order(projects, &block)
+     settings = Setting.send "plugin_redmine_enhanced_projects_list"
+     if settings[:sorting_projects_order] == 'true'
+       order_desc = true
+     else
+       order_desc = false
+     end
+    project_tree_with_order(projects, order_desc, &block)
+    end
   end
 
   module InstanceMethods
