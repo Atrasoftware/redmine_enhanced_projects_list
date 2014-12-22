@@ -15,11 +15,9 @@ module  Patches
       end
   module InstanceMethods
     def issue_list_with_order(issues, &block)
-
       projects = issues.map(&:project).uniq
       new_issues = Array.new
       Project.project_tree(projects) do |project, level|
-
         new_issues<< issues.select{|issue| issue.project == project}
       end
       issue_list_without_order(new_issues.flatten, &block)
