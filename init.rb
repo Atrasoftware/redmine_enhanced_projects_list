@@ -20,4 +20,5 @@ Rails.application.config.to_prepare do
   Project.send(:include, Patches::ProjectPatch)
   IssuesHelper.send(:include, Patches::IssuesHelperPatch)
   IssueQuery.send(:include, Patches::IssueQueryPatch)
+  QueriesHelper.send(:include, Patches::QueriesHelperPatch)
 end
