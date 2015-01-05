@@ -40,9 +40,14 @@ module  Patches
           @projects =  scope.visible.where("parent_id is null").order(order).offset(@offset).limit(@limit)
         }
         format.api  {
+          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
+          order = 'identifier'
+          if @settings[:sorting_projects_order] == 'true'
+            order = 'identifier DESC'
+          end
           @offset, @limit = api_offset_and_limit
           @project_count = Project.visible.count
-         # @projects = Project.visible.offset(@offset).limit(1).order('lft').all
+         # @projects = Project.visible.offset(@offset).limit(@limit).order('lft').all
           @projects = Project.get_all_projects(Project.visible.all, order == 'identifier DESC')[@offset..@limit]
         }
         format.atom {
