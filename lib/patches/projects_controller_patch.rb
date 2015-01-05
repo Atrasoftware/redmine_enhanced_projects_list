@@ -20,7 +20,6 @@ module  Patches
   module InstanceMethods
 
     def index_with_filter_project
-
       respond_to do |format|
         format.html {
           @settings = Setting.send "plugin_redmine_enhanced_projects_list"
@@ -41,15 +40,9 @@ module  Patches
           @projects =  scope.visible.where("parent_id is null").order(order).offset(@offset).limit(@limit)
         }
         format.api  {
-          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
-          order = 'identifier'
-          if @settings[:sorting_projects_order] == 'true'
-            order = 'identifier DESC'
-          end
           @offset, @limit = api_offset_and_limit
           @project_count = Project.visible.count
-         # @projects = Project.visible.offset(@offset).limit(1).order('lft').all
-          @projects = Project.get_all_projects(Project.visible, order == 'identifier DESC')[@offset..@limit]
+          @projects = Project.visible.offset(@offset).limit(@limit).order('lft').all
         }
         format.atom {
           projects = Project.visible.order('created_on DESC').limit(Setting.feeds_limit.to_i).all
@@ -94,13 +87,17 @@ module  Patches
           @settings= @settings.except(:sorting_projects_order)
         send_data(ProjectsHelper.to_pdf(@projects,@settings,settings,'FR',order_desc), :type => 'application/pdf', :filename => 'projects.pdf')
         }
-=begin
+
         format.js{
+          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
+          order = 'identifier'
+          if @settings[:sorting_projects_order] == 'true'
+            order = 'identifier DESC'
+          end
           scope = Project
           unless params[:closed]
             scope = scope.active
           end
-          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
           if params[:project_search]
             scope= scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%")
             val = CustomValue.where(:customized_type=> 'Project').where("value like ?", "%#{params[:project_search]}%" )
@@ -110,7 +107,7 @@ module  Patches
           end
           @projects = scope
         }
-=end
+
       end
     end
 
