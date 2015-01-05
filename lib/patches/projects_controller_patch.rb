@@ -20,12 +20,6 @@ module  Patches
   module InstanceMethods
 
     def index_with_filter_project
-      @plugin = Redmine::Plugin.find("redmine_enhanced_projects_list")
-      @partial = @plugin.settings[:partial]
-      unless @plugin.configurable?
-        render_404
-        return
-      end
       @settings = Setting.send "plugin_redmine_enhanced_projects_list"
       order = 'identifier'
       if @settings[:sorting_projects_order] == 'true'
@@ -33,12 +27,10 @@ module  Patches
       end
       respond_to do |format|
         format.html {
-
           scope = Project
           unless params[:closed]
             scope = scope.active
           end
-
           #change the limit HERE
           # PS: LIMIT are set for project root ( parent id = null)
           @limit  = per_page_option
@@ -48,8 +40,6 @@ module  Patches
           @projects =  scope.visible.where("parent_id is null").order(order).offset(@offset).limit(@limit)
         }
         format.api  {
-
-
           @offset, @limit = api_offset_and_limit
           @project_count = Project.visible.count
          # @projects = Project.visible.offset(@offset).limit(1).order('lft').all
