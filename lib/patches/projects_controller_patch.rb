@@ -42,7 +42,7 @@ module  Patches
         format.api  {
           @offset, @limit = api_offset_and_limit
           @project_count = Project.visible.count
-          @projects = Project.visible.order('identifier DESC').offset(@offset).limit(@limit).all
+          @projects = Project.visible.offset(@offset).limit(@limit).order('lft').all
           #@projects = Project.get_all_projects(Project.visible.all, order == 'identifier DESC')[@offset..@limit]
         }
         format.atom {
