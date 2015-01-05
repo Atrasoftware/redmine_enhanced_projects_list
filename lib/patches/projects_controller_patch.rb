@@ -88,6 +88,7 @@ module  Patches
           @settings= @settings.except(:sorting_projects_order)
         send_data(ProjectsHelper.to_pdf(@projects,@settings,settings,'FR',order_desc), :type => 'application/pdf', :filename => 'projects.pdf')
         }
+=begin
         format.js{
           scope = Project
           unless params[:closed]
@@ -103,6 +104,7 @@ module  Patches
           end
           @projects = scope
         }
+=end
       end
     end
 
