@@ -13,8 +13,9 @@ module  Patches
         end
 
         def self.project_tree_with_order(projects, order_desc, &block)
+
           ancestors = []
-          projects = get_all_projects(projects,order_desc)
+         projects = get_all_projects(projects,order_desc)
           projects.each do |project|
             while (ancestors.any? && !project.is_descendant_of?(ancestors.last))
               ancestors.pop
@@ -22,15 +23,16 @@ module  Patches
             yield project, ancestors.size
             ancestors << project
           end
+
         end
 
         def self.get_all_projects(projects,order_desc=false)
           p=[]
           scope = Project
           if order_desc
-            prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier).reverse
+            prs = projects.sort_by(&:identifier).reverse
           else
-            prs = projects.select{|pr| pr.parent_id.nil?}.sort_by(&:identifier)
+            prs = projects.sort_by(&:identifier)
           end
           sorting_projects(p,prs,scope,order_desc)
         end
@@ -39,13 +41,11 @@ module  Patches
           projects.each do |project|
             p<< project
             if order_desc
-            prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier).reverse
+              prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier).reverse
             else
               prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier)
-              end
-            if prs.present?
-              sorting_projects(p,prs,all_projects,order_desc)
             end
+            sorting_projects(p, prs, all_projects, order_desc) if prs.present?
           end
           p
         end
