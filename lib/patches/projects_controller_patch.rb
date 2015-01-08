@@ -36,7 +36,7 @@ module  Patches
           @limit  = per_page_option
           @projects_count  = scope.visible.where("parent_id is null").size
           @projects_pages = Redmine::Pagination::Paginator.new @projects_count, @limit, params['page']
-          @offset ||=@projects_pages.offset
+          @offset ||= @projects_pages.offset
           @projects =  scope.visible.where("parent_id is null").order(order).offset(@offset).limit(@limit)
         }
         format.api  {
@@ -86,7 +86,7 @@ module  Patches
           if @settings[:sorting_projects_order] == 'true'
             order_desc = true
           end
-          @settings= @settings.except(:sorting_projects_order)
+          @settings = @settings.except(:sorting_projects_order)
         send_data(ProjectsHelper.to_pdf(@projects,@settings,settings,'FR',order_desc), :type => 'application/pdf', :filename => 'projects.pdf')
         }
 
@@ -100,13 +100,19 @@ module  Patches
           unless params[:closed]
             scope = scope.active
           end
+          scope2 = scope
+
           if params[:project_search]
-            scope= scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%")
+            scope = scope.visible.where("name like ? or identifier like ? ","%#{params[:project_search]}%","%#{params[:project_search]}%")
+
             val = CustomValue.where(:customized_type=> 'Project').where("value like ?", "%#{params[:project_search]}%" )
             val.each do |pr|
-              scope<< pr.customized unless scope.map(&:identifier).include? pr.customized.identifier
+              if pr.customized
+                scope<< pr.customized if !scope.map(&:identifier).include?(pr.customized.identifier) and scope2.visible.map(&:identifier).include?(pr.customized.identifier)
+              end
             end
           end
+          binding.pry
           @projects = scope
         }
 
