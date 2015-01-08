@@ -26,28 +26,33 @@ module  Patches
 
         end
 
-        def self.get_all_projects(projects,order_desc=false)
+        def self.get_all_projects(projects, order_desc=false)
           p=[]
-          scope = Project
+          scope = Project.visible
           if order_desc
             prs = projects.sort_by(&:identifier).reverse
           else
             prs = projects.sort_by(&:identifier)
           end
-          sorting_projects(p,prs,scope,order_desc)
+          sorting_projects(p, prs, scope, order_desc)
         end
 
-        def self.sorting_projects(p,projects,all_projects,order_desc)
+        def self.sorting_projects(p, projects, scope, order_desc)
           projects.each do |project|
-            p<< project
-            if order_desc
-              prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier).reverse
+            if project.parent_id.nil? or (p.map(&:id).include?(project.parent_id) and !p.map(&:id).include?(project.id))
+              p<< project  #!p.map(&:id).include?(project.id)  or !projects.map(&:id).include?(project.parent_id)
             else
-              prs = all_projects.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier)
+              p<< project unless projects.map(&:id).include?(project.parent_id)
             end
-            sorting_projects(p, prs, all_projects, order_desc) if prs.present?
+            if order_desc
+              prs = scope.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier).reverse
+            else
+              prs = scope.select{|pr| pr.parent_id== project.id}.sort_by(&:identifier)
+            end
+            prs = prs.reject{|pr| p.map(&:id).include?(pr.id)}
+            sorting_projects(p, prs, scope, order_desc) if prs.present?
           end
-          p.uniq
+          p
         end
 
       end
