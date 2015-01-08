@@ -47,7 +47,7 @@ module  Patches
             end
             sorting_projects(p, prs, all_projects, order_desc) if prs.present?
           end
-          p
+          p.uniq
         end
 
       end
