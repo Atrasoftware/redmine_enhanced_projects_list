@@ -6,13 +6,17 @@
       <li><%= context_menu_link l(:button_copy), copy_project_path(@project),
                                 :class => 'icon-copy', :disabled => !@can[:copy] %></li>
 
-      <li><%= context_menu_link l(:button_close), close_project_path(@project),
-                              :class => 'icon-lock', :disabled => !@can[:close] %></li>
+      <% if @project.active? %>
+          <%= context_menu_link l(:button_close), close_project_path(@project), :data => {:confirm => l(:text_are_you_sure)}, :method => :post, :class => 'icon icon-lock', :disabled => !@can[:close] %>
+      <% else %>
+          <%= context_menu_link l(:button_reopen), reopen_project_path(@project), :data => {:confirm => l(:text_are_you_sure)}, :method => :post, :class => 'icon icon-unlock', :disabled => !@can[:reopen] %>
+      <% end %>
   <% end %>
 
 <%  if @cfs and @cfs.present?%>
+      <li><%= "----------------------------".html_safe %></li>
   <% @cfs.each do |cf| %>
-          <li><%= "<b>#{cf[0]}</b>:#{cf[1]}".html_safe %></li>
+          <li><%= "<b>#{cf[0]}</b>: #{cf[1]}".html_safe %></li>
       <% end %>
   <% end %>
 </ul>

@@ -29,9 +29,10 @@ module  Patches
               :update => User.current.allowed_to?(:edit_project, @project),
               :close => User.current.allowed_to?(:close_project, @project),
               :copy => User.current.allowed_to?(:copy_project, @project),
+              :reopen => User.current.allowed_to?(:close_project, @project)
       }
 
-      @cfs = @project.visible_custom_field_values.map{|cf| [cf.custom_field.name, format_object(cf, false).html_safe]}
+      @cfs = @project.visible_custom_field_values.map{|cf| [cf.custom_field.name, format_object(cf, false)]}
       @cfs.reject!{|cf| cf[1].nil? or cf[1].blank? }
       render :layout => false
     end
