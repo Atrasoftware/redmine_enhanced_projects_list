@@ -12,7 +12,9 @@ module  Patches
 
       end
 
-      end
+  end
+  module ClassMethods
+  end
   module InstanceMethods
     def issue_list_with_order(issues, &block)
       if params[:group_by] == "project"
