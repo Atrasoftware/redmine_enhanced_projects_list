@@ -1,3 +1,4 @@
+<%= form_tag({}) do -%>
 <div class="autoscroll">
   <table id="myTable" class="tablesorter list">
   <thead>
@@ -23,8 +24,13 @@
          order_desc = false
      end
   %>
-  <% Project.project_tree_with_order(@projects, order_desc) do |project, level| %>
-      <tr class="<%= cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
+
+      <% Project.project_tree_with_order(@projects, order_desc) do |project, level| %>
+      <tr class="hascontextmenu <%=  cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
+        <td class="checkbox hide-when-print" style="display: none;">
+          <%= check_box_tag("ids[]", project.id, false, :id => nil) %>
+        </td>
+
         <td class="name"><span><%= link_to project.identifier, project_path(project) %></span></td>
         <% if @settings.present? %>
         <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
@@ -64,6 +70,7 @@
         </td>
       </tr>
   <% end %>
+
   </tbody>
 </table>
 </div>
@@ -77,3 +84,4 @@
     }
     );
 </script>
+<% end %>

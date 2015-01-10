@@ -1,0 +1,18 @@
+<ul>
+  <% if @project -%>
+      <li><%= context_menu_link l(:button_edit), settings_project_path(@project),
+                                :class => 'icon-edit', :disabled => !@can[:edit] %></li>
+
+      <li><%= context_menu_link l(:button_copy), copy_project_path(@project),
+                                :class => 'icon-copy', :disabled => !@can[:copy] %></li>
+
+      <li><%= context_menu_link l(:button_close), close_project_path(@project),
+                              :class => 'icon-lock', :disabled => !@can[:close] %></li>
+  <% end %>
+
+<%  if @cfs and @cfs.present?%>
+  <% @cfs.each do |cf| %>
+          <li><%= "<b>#{cf[0]}</b>:#{cf[1]}".html_safe %></li>
+      <% end %>
+  <% end %>
+</ul>
