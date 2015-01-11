@@ -13,7 +13,7 @@
           <% end  %>
        <% end %>
       <th></th>
-      <th class="hide-when-print"></th>
+
     </tr>
   </thead>
   <tbody>
@@ -63,11 +63,7 @@
              <span class="my-project"></span>
           <% end %>
         </td>
-        <td class="hide-when-print">
-          <% if (User.current.member_of?(project) and User.current.allowed_to?({:controller => :projects, :action => :copy}, project, :global => false)) or User.current.admin? %>
-                  <%= link_to(l(:button_copy), { :controller => 'projects', :action => 'copy', :id => project }, :class => 'icon icon-copy') %>
-          <% end %>
-        </td>
+
       </tr>
   <% end %>
 
