@@ -3,7 +3,7 @@
   <table id="myTable" class="tablesorter list">
   <thead>
     <tr>
-      <th></th>
+      <th style="display: none;"></th>
       <th> <%= l(:field_identifier) %></th>
       <% if @settings.present? %>
           <% Project.column_names.select{|col| @settings[col.to_sym] and col!= 'identifier' }.each do |column| %>
