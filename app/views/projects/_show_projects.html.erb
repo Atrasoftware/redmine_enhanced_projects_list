@@ -3,52 +3,42 @@
   <table id="myTable" class="tablesorter list">
   <thead>
     <tr>
-      <th> <%= l("field_identifier".to_sym) %></th>
+      <th></th>
+      <th> <%= l(:field_identifier) %></th>
       <% if @settings.present? %>
-          <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
-                  <th> <%= l("field_#{column}".to_sym) %></th>
+          <% Project.column_names.select{|col| @settings[col.to_sym] and col!= 'identifier' }.each do |column| %>
+            <th> <%= l("field_#{column}".to_sym) %></th>
           <% end %>
-          <% CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
-              <th>  <%= cf.name %> </th>
+          <% CustomField.where(:type=> 'ProjectCustomField').order('name ASC').select{|col| @settings[col.name.to_sym] }.each do |cf| %>
+            <th>  <%= cf.name %> </th>
           <% end  %>
        <% end %>
-      <th></th>
-
+      <th></th><!-- STAR ICON -->
     </tr>
   </thead>
   <tbody>
-  <%
-     if @settings[:sorting_projects_order] == 'true'
-       order_desc = true
-       else
-         order_desc = false
-     end
-  %>
-
-      <% Project.project_tree_with_order(@projects, order_desc) do |project, level| %>
-      <tr class="hascontextmenu <%=  cycle("odd", "even") %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
+     <% Project.project_tree(@projects) do |project, level| %>
+      <tr class="hascontextmenu <%=  cycle('odd', 'even') %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
         <td class="checkbox hide-when-print" style="display: none;">
-          <%= check_box_tag("ids[]", project.id, false, :id => nil) %>
+          <%= check_box_tag('ids[]', project.id, false, :id => nil) %>
         </td>
-
         <td class="name"><span><%= link_to project.identifier, project_path(project) %></span></td>
         <% if @settings.present? %>
-        <% Project.column_names.select{|col| @settings[col.to_sym] and col!= "identifier" }.each do |column| %>
-	    <% if column == "name" %>
-              <td class="name"><span><%= link_to project.name, project_path(project) %></span></td>
-	    <% else %>
-              <td> <%= value =project[column.to_sym]
-	       if value.is_a?(Date)
-                   format_date(value)
+        <% Project.column_names.select{|col| @settings[col.to_sym] and col!= 'identifier' }.each do |column| %>
+            <% if column == 'name' %>
+                <td class='name'><span><%= link_to project.name, project_path(project) %></span></td>
+            <% else %>
+                <td> <%= value =project[column.to_sym]
+               if value.is_a?(Date)
+                 format_date(value)
                elsif value.is_a?(Time)
-                    format_time(value)
+                 format_time(value)
                else
-                    "#{value}"
-               end
-               %></td>
-	    <% end %>
+                 "#{value}"
+               end %></td>
+            <% end %>
         <% end %>
-            <% CustomField.where(:type=> "ProjectCustomField").order("name ASC").select{|col| @settings[col.name.to_sym] }.each do |cf| %>
+            <% CustomField.where(:type=> 'ProjectCustomField').order('name ASC').select{|col| @settings[col.name.to_sym] }.each do |cf| %>
                 <% project.visible_custom_field_values.select{|coll| coll.custom_field.name == cf.name }.each do |custom_value| %>
                     <td>
                       <% unless custom_value.value.blank? %>
@@ -63,7 +53,6 @@
              <span class="my-project"></span>
           <% end %>
         </td>
-
       </tr>
   <% end %>
 
@@ -71,13 +60,10 @@
 </table>
 </div>
 
-<%= javascript_include_tag 'jquery.tablesorter.min.js', :plugin=>"redmine_enhanced_projects_list" %>
+<%= javascript_include_tag 'jquery.tablesorter.min.js', :plugin=> 'redmine_enhanced_projects_list' %>
 <script>
-    $(document).ready(function()
-    {
+    $(function(){
         $("#myTable").tablesorter();
-
-    }
-    );
+    });
 </script>
 <% end %>
