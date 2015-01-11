@@ -28,13 +28,24 @@ module  Patches
       @can = {:edit => User.current.allowed_to?(:edit_project, @project),
               :update => User.current.allowed_to?(:edit_project, @project),
               :close => User.current.allowed_to?(:close_project, @project),
-              :copy => User.current.allowed_to?(:copy_project, @project),
+              :copy => User.current.allowed_to?({controller: :projects, action: :copy}, @project),
               :reopen => User.current.allowed_to?(:close_project, @project)
       }
+      @cfs = @project.visible_custom_field_values
 
-      @cfs = @project.visible_custom_field_values.map{|cf| [cf.custom_field.name, format_object(cf, false)]}
-      @cfs.reject!{|cf| cf[1].nil? or cf[1].blank? }
       render :layout => false
+    end
+
+    def update_project_cf
+
+      @project = Project.find(params[:id])
+      params_cf = params[:project][:custome_fields]
+      cfx = CustomField.find(params_cf)
+      cf = @project.custom_values.select{|cf| cf.custom_field == cfx}.first
+      cf.value = params[:project][:value]
+      cf.save
+      flash[:notice] = l(:notice_successful_update)
+      redirect_to :back
     end
   end
 end

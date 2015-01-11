@@ -1,3 +1,8 @@
+<% def to_bool(value)
+    return true if value == true || value =~ (/^(true|t|yes|y|1)$/i)
+    return false if value == false || value.blank? || value =~ (/^(false|f|no|n|0)$/i)
+    false
+end%>
 <ul>
   <% if @project -%>
       <li><%= context_menu_link l(:button_edit), settings_project_path(@project),
@@ -13,10 +18,35 @@
       <% end %>
   <% end %>
 
-<%  if @cfs and @cfs.present?%>
-      <li><%= "----------------------------".html_safe %></li>
-  <% @cfs.each do |cf| %>
-          <li><%= "<b>#{cf[0]}</b>: #{cf[1]}".html_safe %></li>
+  <% if @can[:edit] %>
+      <%  if @cfs and @cfs.present?%>
+          <li><%= "----------------------------".html_safe %></li>
+          <% @cfs.each do |cf|
+
+            if cf.custom_field.field_format.in? ["list", "bool"] %>
+                  <li class="folder">
+                    <a href="#" class="submenu"><%= cf.custom_field.name %></a>
+                    <% if cf.custom_field.field_format == 'bool'
+                         @values = [true, false]
+                         val = to_bool(format_object(cf, false))
+                       else
+                         @values = cf.custom_field.possible_values
+                         val = format_object(cf, false)
+                       end %>
+                    <ul>
+                      <% @values.each do |v| -%>
+                          <li><%= context_menu_link v, update_project_cf_path(:id => @project.id, :project => {'custome_fields' => cf.custom_field, :value=> v}, :back_url => @back), :method => :post,
+                                                    :selected => (v == val), :disabled => !@can[:update] %></li>
+                      <% end -%>
+                    </ul>
+                  </li>
+              <% else %>
+                  <% unless format_object(cf).nil? or format_object(cf).blank? %>
+                     <li><%=  context_menu_link "<b>#{cf.custom_field.name}</b>: #{format_object(cf)}".html_safe, '#' %></li>
+                  <% end %>
+              <% end %>
+          <% end %>
       <% end %>
   <% end %>
+
 </ul>
