@@ -91,6 +91,7 @@ module  Patches
         }
 
         format.js{
+          @settings = Setting.send "plugin_redmine_enhanced_projects_list"
           scope = Project
           unless params[:closed]
             scope = scope.active
