@@ -28,7 +28,8 @@ module  Patches
 
   module InstanceMethods
     def issue_list_with_order(issues, &block)
-      if params[:group_by] == "project"
+
+      if params[:group_by] == "project" or (!@query.nil? and @query.group_by == "project" )
         projects = issues.map(&:project).uniq
         new_issues = Array.new
         Project.project_tree(projects) do |project, level|
