@@ -29,6 +29,18 @@ module  Patches
   module InstanceMethods
     def issue_list_with_order(issues, &block)
 
+
+      #issue_list_without_order(issues, &block)
+=begin
+    tree= []
+   #   tree = issues.sort_by(&:lft)
+      issues.each do |issue|
+
+        tree = get_issue_tree(tree, issue, issues, &block)
+      end
+
+      issues = tree
+=end
       if params[:group_by] == "project" or (!@query.nil? and @query.group_by == "project" )
         projects = issues.map(&:project).uniq
         new_issues = Array.new
@@ -37,12 +49,7 @@ module  Patches
         end
         issues =  new_issues.flatten
       end
-      #issue_list_without_order(issues, &block)
-      tree= []
-      issues.each do |issue|
-        tree = get_issue_tree(tree, issue, issues, &block)
-      end
-      issues = tree
+
 
       ancestors = []
       issues.each do |issue|

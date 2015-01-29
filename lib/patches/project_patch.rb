@@ -15,27 +15,27 @@ module  Patches
         def self.project_tree_with_order(projects, order_desc, &block)
 
           ancestors = []
-         projects = get_all_projects(projects,order_desc)
+         projects = get_all_projects(projects, order_desc)
           projects.each do |project|
-            while (ancestors.any? && !project.is_descendant_of?(ancestors.last))
+            while ancestors.any? && !project.is_descendant_of?(ancestors.last)
               ancestors.pop
             end
             yield project, ancestors.size
             ancestors << project
           end
-
         end
 
-        def self.get_all_projects(projects, order_desc=false)
+        def self.get_all_projects(projects, order_desc = false)
           p=[]
-          scope = Project.visible
+         # scope = Project.visible
+
           if order_desc
             prs = projects.sort_by(&:identifier).reverse
           else
             prs = projects.sort_by(&:identifier)
           end
-          pre_project = all_visible_projects(prs, scope, order_desc).uniq
-          sorting_projects(p, pre_project, pre_project)
+         # pre_project = all_visible_projects(prs, scope, order_desc).uniq
+          sorting_projects(p, prs, prs)
         end
 
         def self.all_visible_projects(projects, scope, order_desc, p = [])
