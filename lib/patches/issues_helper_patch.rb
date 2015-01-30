@@ -49,16 +49,7 @@ module  Patches
         end
         issues =  new_issues.flatten
       end
-
-
-      ancestors = []
-      issues.each do |issue|
-        while ancestors.any? && !issue.is_descendant_of?(ancestors.last)
-          ancestors.pop
-        end
-        yield issue, ancestors.size
-        ancestors << issue unless issue.leaf?
-      end
+      issue_list_without_order(issues, &block)
 
     end # end method issue list
 
