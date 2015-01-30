@@ -15,7 +15,7 @@ module  Patches
         def self.project_tree_with_order(projects, order_desc, &block)
 
           ancestors = []
-         projects = get_all_projects(projects, order_desc)
+          projects = get_all_projects(projects, order_desc)
           projects.each do |project|
             while ancestors.any? && !project.is_descendant_of?(ancestors.last)
               ancestors.pop
@@ -27,15 +27,19 @@ module  Patches
 
         def self.get_all_projects(projects, order_desc = false)
           p=[]
-         # scope = Project.visible
-
+          # scope = Project.visible
           if order_desc
-            prs = projects.sort_by(&:identifier).reverse
+            prs = projects.sort do |a,b|
+              res = -(a.identifier <=> b.identifier)
+              res = a.parent_id <=> b.parent_id if res == 0
+              res
+            end
           else
-            prs = projects.sort_by(&:identifier)
+              prs = projects.sort_by{|p| [p.identifier, p.parent_id] }
           end
-         # pre_project = all_visible_projects(prs, scope, order_desc).uniq
-          sorting_projects(p, prs, prs)
+          prs
+          # pre_project = all_visible_projects(prs, scope, order_desc).uniq
+          #sorting_projects(p, prs, prs)
         end
 
         def self.all_visible_projects(projects, scope, order_desc, p = [])
@@ -49,9 +53,12 @@ module  Patches
         end
 
         def self.sorting_projects(p, projects, scope)
+          map_id = p.map(&:id)
           projects.each do |project|
-            if project.parent_id.nil? or (p.map(&:id).include?(project.parent_id) and !p.map(&:id).include?(project.id)) or !scope.map(&:id).include?(project.parent_id)
+            if project.parent_id.nil? or (map_id.include?(project.parent_id) and !map_id.include?(project.id))
               p<< project  #!p.map(&:id).include?(project.id)  or !projects.map(&:id).include?(project.parent_id)
+            else
+              p<< project unless scope.map(&:id).include?(project.parent_id)
             end
             prs = scope.select{|pr| pr.parent_id == project.id}
             sorting_projects(p, prs, projects) if prs.present?
@@ -62,16 +69,16 @@ module  Patches
       end
     end
 
-      end
+  end
   module ClassMethods
-   def project_tree_with_new_order(projects, &block)
-     settings = Setting.send "plugin_redmine_enhanced_projects_list"
-     if settings[:sorting_projects_order] == 'true'
-       order_desc = true
-     else
-       order_desc = false
-     end
-    project_tree_with_order(projects, order_desc, &block)
+    def project_tree_with_new_order(projects, &block)
+      settings = Setting.send "plugin_redmine_enhanced_projects_list"
+      if settings[:sorting_projects_order] == 'true'
+        order_desc = true
+      else
+        order_desc = false
+      end
+      project_tree_with_order(projects, order_desc, &block)
     end
   end
 
@@ -79,4 +86,4 @@ module  Patches
 
   end
 
-      end
+end
