@@ -29,17 +29,20 @@ module  Patches
           p=[]
           # scope = Project.visible
           if order_desc
+=begin
             prs = projects.sort do |a,b|
-              res = -(a.identifier <=> b.identifier)
-              res = a.parent_id <=> b.parent_id if res == 0
+              res = -("#{a.parent_id}" <=> "#{b.parent_id}")
+              res = -(a.identifier <=> b.identifier) if res == 0
               res
             end
+=end
+            prs = projects.sort_by{|p| [p.identifier] }.reverse
           else
-              prs = projects.sort_by{|p| [p.identifier, p.parent_id] }
+              prs = projects.sort_by{|p| [p.identifier] }
           end
-          prs
+         # prs
           # pre_project = all_visible_projects(prs, scope, order_desc).uniq
-          #sorting_projects(p, prs, prs)
+          sorting_projects(p, prs, prs)
         end
 
         def self.all_visible_projects(projects, scope, order_desc, p = [])
