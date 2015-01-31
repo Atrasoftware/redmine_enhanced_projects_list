@@ -12,10 +12,9 @@ module  Patches
           alias_method_chain :project_tree, :new_order
         end
 
-        def self.project_tree_with_order(projects, order_desc, &block)
-
+        def self.project_tree_with_order(projects, order_desc, is_closed, &block)
           ancestors = []
-          projects = get_all_projects(projects, order_desc)
+          projects = get_all_projects(projects, order_desc, is_closed)
           projects.each do |project|
             while ancestors.any? && !project.is_descendant_of?(ancestors.last)
               ancestors.pop
@@ -25,10 +24,12 @@ module  Patches
           end
         end
 
-        def self.get_all_projects(projects, order_desc = false)
-
+        def self.get_all_projects(projects, order_desc = false, is_closed = false)
           p=[]
            scope = Project.visible
+          unless is_closed
+            scope = scope.active
+          end
           if order_desc
             prs = projects.sort_by{|p| [p.identifier] }.reverse
           else
@@ -75,7 +76,7 @@ module  Patches
       else
         order_desc = false
       end
-      project_tree_with_order(projects, order_desc, &block)
+      project_tree_with_order(projects, order_desc, false, &block)
     end
   end
 

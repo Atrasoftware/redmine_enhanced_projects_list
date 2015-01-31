@@ -19,7 +19,15 @@
     </tr>
   </thead>
   <tbody>
-     <% Project.project_tree(@projects) do |project, level| %>
+  <%
+     settings = Setting.send "plugin_redmine_enhanced_projects_list"
+     if settings[:sorting_projects_order] == 'true'
+       order_desc = true
+     else
+       order_desc = false
+     end
+  %>
+     <% Project.project_tree_with_order(@projects, order_desc, params[:closed]) do |project, level| %>
       <tr class="hascontextmenu <%=  cycle('odd', 'even') %> <%= project.css_classes %> <%= level > 0 ? "idnt idnt-#{level}" : nil %>">
         <td class="checkbox hide-when-print" style="display: none;">
           <%= check_box_tag('ids[]', project.id, false, :id => nil) %>
