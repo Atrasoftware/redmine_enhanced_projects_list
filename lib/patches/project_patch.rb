@@ -26,23 +26,15 @@ module  Patches
         end
 
         def self.get_all_projects(projects, order_desc = false)
+
           p=[]
-          # scope = Project.visible
+           scope = Project.visible
           if order_desc
-=begin
-            prs = projects.sort do |a,b|
-              res = -("#{a.parent_id}" <=> "#{b.parent_id}")
-              res = -(a.identifier <=> b.identifier) if res == 0
-              res
-            end
-=end
             prs = projects.sort_by{|p| [p.identifier] }.reverse
           else
               prs = projects.sort_by{|p| [p.identifier] }
           end
-         # prs
-          # pre_project = all_visible_projects(prs, scope, order_desc).uniq
-          sorting_projects(p, prs, prs)
+          sorting_projects(p, prs, scope)
         end
 
         def self.all_visible_projects(projects, scope, order_desc, p = [])
@@ -58,13 +50,15 @@ module  Patches
         def self.sorting_projects(p, projects, scope)
           map_id = p.map(&:id)
           projects.each do |project|
-            if project.parent_id.nil? or (map_id.include?(project.parent_id) and !map_id.include?(project.id))
-              p<< project  #!p.map(&:id).include?(project.id)  or !projects.map(&:id).include?(project.parent_id)
-            else
-              p<< project unless scope.map(&:id).include?(project.parent_id)
+            if project.parent_id.nil?
+              p<< project
+            elsif map_id.include?(project.parent_id) and !map_id.include?(project.id)
+              p<< project
+            elsif !scope.map(&:id).include?(project.parent_id)
+              p<< project
             end
-            prs = scope.select{|pr| pr.parent_id == project.id}
-            sorting_projects(p, prs, projects) if prs.present?
+            prs = scope.where(parent_id: project.id)
+            sorting_projects(p, prs, scope) if prs.present?
           end
           p
         end
