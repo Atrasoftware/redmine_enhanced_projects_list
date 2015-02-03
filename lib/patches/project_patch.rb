@@ -12,7 +12,7 @@ module  Patches
           alias_method_chain :project_tree, :new_order
         end
 
-        def self.project_tree_with_order(projects, order_desc, is_closed, &block)
+        def self.project_tree_with_order(projects, order_desc, is_closed = false, &block)
           ancestors = []
           projects = get_all_projects(projects, order_desc, is_closed)
           projects.each do |project|
