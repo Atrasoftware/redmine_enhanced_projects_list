@@ -49,6 +49,6 @@ end%>
   <% end %>
     <% tracker_issues = @project.issues.reject{|issue| issue.closed? }.group_by(&:tracker)
        tracker_issues.each do |tracker, issues| %>
-      <li> <%= pluralize(issues.count, "open #{tracker.name}")  %></li>
+      <li> <%= context_menu_link "<b>#{tracker.name}</b>: #{issues.count}".html_safe, project_issues_path(@project, :set_filter => 1, :tracker_id => tracker.id)  %></li>
       <% end %>
 </ul>
