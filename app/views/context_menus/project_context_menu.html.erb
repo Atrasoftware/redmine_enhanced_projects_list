@@ -47,5 +47,8 @@ end%>
           <% end %>
       <% end %>
   <% end %>
-
+    <% tracker_issues = @project.issues.reject{|issue| issue.closed? }.group_by(&:tracker)
+       tracker_issues.each do |tracker, issues| %>
+      <li> <%= pluralize(issues.count, "open #{tracker.name}")  %></li>
+      <% end %>
 </ul>
