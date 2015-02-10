@@ -18,7 +18,7 @@ Rails.application.config.to_prepare do
   ProjectsController.send(:include, Patches::ProjectsControllerPatch)
   ProjectsHelper.send(:include, Patches::ProjectsHelperPatch)
   Project.send(:include, Patches::ProjectPatch)
-  IssuesHelper.send(:include, Patches::IssuesHelperPatch)
+  IssuesController.send(:include, Patches::IssuesHelperPatch)
   IssueQuery.send(:include, Patches::IssueQueryPatch)
   QueriesHelper.send(:include, Patches::QueriesHelperPatch)
   ContextMenusController.send(:include, Patches::ContextMenusControllerPatch)
