@@ -50,7 +50,7 @@ module  Patches
           if @settings[:sorting_projects_order] == 'true'
             @issues.reverse!
           end
-          @issues = @issues[@offset..@limit]
+          @issues = @issues[@offset..(@offset+@limit-1)]
         else
           @issues = @query.issues(:include => [:assigned_to, :tracker, :priority, :category, :fixed_version],
                                   :order => sort_issue,
