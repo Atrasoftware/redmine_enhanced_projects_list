@@ -21,7 +21,8 @@ module  Patches
       begin
         value = column.value_object(issue)
       rescue
-        value = issue.project.visible_custom_field_values.select{|coll| coll.custom_field.name == column.caption }.first.value||=  ""
+        cf = issue.project.visible_custom_field_values.select{|coll| coll.custom_field.name == column.caption }.first
+        value = cf.nil? ? '' : cf.value
       end
       if value.is_a?(Array)
         value.collect {|v| csv_value(column, issue, v)}.compact.join(', ')
