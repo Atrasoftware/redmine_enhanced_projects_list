@@ -35,7 +35,11 @@ module  Patches
           else
               prs = projects.sort_by{|p| [p.identifier] }
           end
-          sorting_projects(p, prs, scope)
+          sorted_projects = sorting_projects(p, prs, scope)
+          prs.each do |ps|
+            sorted_projects<< ps unless sorted_projects.include?(ps)
+          end
+          sorted_projects
         end
 
         def self.all_visible_projects(projects, scope, order_desc, p = [])
