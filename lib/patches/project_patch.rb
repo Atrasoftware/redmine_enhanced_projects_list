@@ -74,13 +74,17 @@ module  Patches
   end
   module ClassMethods
     def project_tree_with_new_order(projects, &block)
-      settings = Setting.send "plugin_redmine_enhanced_projects_list"
-      if settings[:sorting_projects_order] == 'true'
-        order_desc = true
+      if projects.first.attributes.has_key? 'parent_id'
+        settings = Setting.send "plugin_redmine_enhanced_projects_list"
+        if settings[:sorting_projects_order] == 'true'
+          order_desc = true
+        else
+          order_desc = false
+        end
+        project_tree_with_order(projects, order_desc, false, &block)
       else
-        order_desc = false
+        project_tree_without_new_order(projects, &block)
       end
-      project_tree_with_order(projects, order_desc, false, &block)
     end
   end
 
