@@ -10,6 +10,7 @@ module  Patches
 
         class<< self
           alias_method_chain :project_tree, :new_order
+          alias_method_chain :next_identifier, :year
         end
 
         def self.project_tree_with_order(projects, order_desc, is_closed = false, &block)
@@ -73,6 +74,15 @@ module  Patches
 
   end
   module ClassMethods
+    def next_identifier_with_year
+      year = Date.today.year
+      p = Project.where("YEAR(created_on) >= ?", year ).count
+
+      # p = Project.order('id DESC').first
+      # p.nil? ? nil : p.identifier.to_s.succ
+      "c#{year%2000}#{"%03d" % p.succ}"
+    end
+
     def project_tree_with_new_order(projects, &block)
       if projects.first.attributes.has_key? 'parent_id'
         settings = Setting.send "plugin_redmine_enhanced_projects_list"
