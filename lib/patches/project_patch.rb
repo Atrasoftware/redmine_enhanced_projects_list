@@ -27,20 +27,23 @@ module  Patches
 
         def self.get_all_projects(projects, order_desc = false, is_closed = false)
           p=[]
-           scope = Project.visible
+          scope = Project.visible
           unless is_closed
             scope = scope.active
           end
           if order_desc
             prs = projects.sort_by{|p| [p.identifier] }.reverse
+            # prs = projects.sort_by{|p| [p.parent_id || p.id, p.identifier] }.reverse
           else
-              prs = projects.sort_by{|p| [p.identifier] }
+            prs = projects.sort_by{|p| [p.identifier] }
           end
           sorted_projects = sorting_projects(p, prs, scope)
-          prs.each do |ps|
-            sorted_projects<< ps unless sorted_projects.include?(ps)
-          end
-          sorted_projects
+          rested = prs - sorted_projects
+          # prs.each do |ps|
+          #   sorted_projects<< ps unless sorted_projects.include?(ps)
+          # end
+
+          sorted_projects + rested
         end
 
         def self.all_visible_projects(projects, scope, order_desc, p = [])
@@ -60,7 +63,7 @@ module  Patches
               p<< project
             elsif map_id.include?(project.parent_id) and !map_id.include?(project.id)
               p<< project
-            elsif !scope.map(&:id).include?(project.parent_id)
+            elsif !scope.pluck(:id).include?(project.parent_id)
               p<< project
             end
             prs = scope.where(parent_id: project.id)
