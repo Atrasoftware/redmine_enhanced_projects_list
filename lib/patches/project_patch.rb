@@ -37,6 +37,7 @@ module  Patches
           else
             prs = projects.sort_by{|p| [p.identifier] }
           end
+          # return prs
           sorted_projects = sorting_projects(p, prs, scope)
           rested = prs - sorted_projects
           # prs.each do |ps|
@@ -57,17 +58,20 @@ module  Patches
         end
 
         def self.sorting_projects(p, projects, scope)
+          scope_ids = scope.pluck(:id)
           map_id = p.map(&:id)
           projects.each do |project|
             if project.parent_id.nil?
               p<< project
-            elsif map_id.include?(project.parent_id) and !map_id.include?(project.id)
+            elsif ([project.parent_id] - map_id).blank? and ([project.id] - map_id).present?
               p<< project
-            elsif !scope.pluck(:id).include?(project.parent_id)
+            elsif ([project.parent_id] - scope_ids).present?
               p<< project
             end
-            prs = scope.where(parent_id: project.id)
-            sorting_projects(p, prs, scope) if prs.present?
+            if project.left != project.rgt - 1
+              prs = scope.where(parent_id: project.id)
+              sorting_projects(p, prs, scope) if prs.present?
+            end
           end
           p
         end
