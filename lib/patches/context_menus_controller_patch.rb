@@ -42,8 +42,15 @@ module  Patches
       params_cf = params[:project][:custome_fields]
       cfx = CustomField.find(params_cf)
       cf = @project.custom_values.select{|cf| cf.custom_field == cfx}.first
-      cf.value = params[:project][:value]
-      cf.save
+      if cf
+        cf.value = params[:project][:value]
+        cf.save
+      else
+        cfs = @project.custom_values.inject({}){|acc, cf| acc[cf.custom_field_id] = cf.value; acc}
+        @project.safe_attributes = {"custom_field_values"=> cfs.merge({cfx.id=> params[:project][:value]})}
+        @project.save
+      end
+
       flash[:notice] = l(:notice_successful_update)
       redirect_to :back
     end
