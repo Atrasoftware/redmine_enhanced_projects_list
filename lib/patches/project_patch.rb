@@ -9,7 +9,7 @@ module  Patches
       base.class_eval do
 
         class<< self
-          # alias_method_chain :project_tree, :new_order
+          alias_method_chain :project_tree, :new_order
           alias_method_chain :next_identifier, :year
         end
 
