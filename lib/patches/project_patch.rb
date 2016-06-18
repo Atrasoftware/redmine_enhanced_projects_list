@@ -68,7 +68,7 @@ module  Patches
             elsif ([project.parent_id] - scope_ids).present?
               p<< project
             end
-            if project.left != project.rgt - 1
+            if project.lft != project.rgt - 1
               prs = scope.where(parent_id: project.id)
               sorting_projects(p, prs, scope) if prs.present?
             end
