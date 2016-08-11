@@ -68,7 +68,7 @@ module  Patches
           }
           format.atom { render_feed(@issues, :title => "#{@project || Setting.app_title}: #{l(:label_issue_plural)}") }
           format.csv  { send_data(query_to_csv(@issues, @query, params), :type => 'text/csv; header=present', :filename => 'issues.csv') }
-          format.pdf  { send_data(issues_to_pdf(@issues, @project, @query), :type => 'application/pdf', :filename => 'issues.pdf') }
+          format.pdf  { send_file_headers! :type => 'application/pdf', :filename => 'issues.pdf' }
         end
       else
         respond_to do |format|

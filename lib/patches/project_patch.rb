@@ -91,6 +91,7 @@ module  Patches
     end
 
     def project_tree_with_new_order(projects, &block)
+      return project_tree_without_new_order(projects, &block) if projects.blank?
       if projects.first.attributes.has_key? 'parent_id'
         settings = Setting.send "plugin_redmine_enhanced_projects_list"
         if settings[:sorting_projects_order] == 'true'
